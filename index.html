@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Бриф — Хекслет YouTube-продюсирование</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0d0d0d; --surface: #161616; --surface2: #1e1e1e;
+  --border: rgba(255,255,255,0.08); --border-accent: rgba(255,255,255,0.15);
+  --text: #f0ede8; --muted: #7a7775; --accent: #e8ff57;
+  --accent-dim: rgba(232,255,87,0.12);
+  --font-head: 'Unbounded', sans-serif; --font-body: 'Golos Text', sans-serif;
+}
+body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 15px; line-height: 1.6; }
+.page { max-width: 860px; margin: 0 auto; padding: 60px 40px 100px; }
+.logo-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: #0d0d0d; font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 14px; border-radius: 100px; margin-bottom: 20px; }
+.title { font-family: var(--font-head); font-size: clamp(26px, 4vw, 42px); font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 12px; }
+.title span { color: var(--accent); }
+.subtitle { font-size: 14px; color: var(--muted); margin-bottom: 40px; }
+.header-divider { height: 1px; background: var(--border-accent); margin-bottom: 40px; }
+.ai-banner { background: var(--accent-dim); border: 1px solid rgba(232,255,87,0.25); border-radius: 12px; padding: 16px 22px; display: flex; align-items: center; gap: 14px; margin-bottom: 40px; }
+.ai-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.ai-text { font-size: 13px; color: rgba(232,255,87,0.85); line-height: 1.5; }
+.ai-text strong { color: var(--accent); }
+.progress-bar-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 100px; height: 6px; margin-bottom: 8px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: var(--accent); border-radius: 100px; transition: width 0.4s ease; width: 0%; }
+.progress-label { font-size: 12px; color: var(--muted); margin-bottom: 40px; }
+.section { margin-bottom: 44px; }
+.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.section-num { font-family: var(--font-head); font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.1em; }
+.section-title-text { font-family: var(--font-head); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.section-line { flex: 1; height: 1px; background: var(--border); }
+.field { margin-bottom: 18px; }
+.field-label { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 8px; }
+.field-required { color: var(--accent); margin-left: 3px; }
+input[type="text"], textarea { width: 100%; background: var(--surface); border: 1px solid var(--border-accent); border-radius: 8px; padding: 11px 14px; font-family: var(--font-body); font-size: 14px; color: var(--text); outline: none; transition: border-color 0.2s, background 0.2s; resize: vertical; display: block; }
+input[type="text"]:focus, textarea:focus { border-color: var(--accent); background: rgba(232,255,87,0.04); }
+input::placeholder, textarea::placeholder { color: var(--muted); }
+.checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.cb-item { position: relative; }
+.cb-item input[type="checkbox"] { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+.cb-item label { display: inline-block; font-size: 13px; padding: 7px 16px; border-radius: 100px; background: var(--surface); border: 1px solid var(--border-accent); color: var(--muted); cursor: pointer; transition: all 0.15s; user-select: none; -webkit-user-select: none; }
+.cb-item input[type="checkbox"]:checked + label { background: var(--accent-dim); border-color: rgba(232,255,87,0.4); color: var(--accent); }
+.cb-item label:hover { border-color: rgba(232,255,87,0.5); color: var(--text); }
+.radio-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.rb-item { position: relative; }
+.rb-item input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+.rb-item label { display: inline-block; font-size: 13px; padding: 7px 16px; border-radius: 100px; background: var(--surface); border: 1px solid var(--border-accent); color: var(--muted); cursor: pointer; transition: all 0.15s; user-select: none; -webkit-user-select: none; }
+.rb-item input[type="radio"]:checked + label { background: var(--accent-dim); border-color: rgba(232,255,87,0.4); color: var(--accent); }
+.rb-item label:hover { border-color: rgba(232,255,87,0.5); color: var(--text); }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.send-btn { display: block; width: 100%; padding: 18px; background: var(--accent); color: #0d0d0d; font-family: var(--font-head); font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; border: none; border-radius: 12px; cursor: pointer; transition: opacity 0.2s, transform 0.1s; margin-top: 48px; }
+.send-btn:hover { opacity: 0.85; }
+.send-btn:active { transform: scale(0.99); }
+.send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.status-box { display: none; border-radius: 12px; padding: 24px 28px; text-align: center; margin-top: 20px; }
+.status-box.success { background: rgba(62,207,176,0.1); border: 1px solid rgba(62,207,176,0.3); }
+.status-box.error { background: rgba(255,77,77,0.1); border: 1px solid rgba(255,77,77,0.3); }
+.status-box h3 { font-family: var(--font-head); font-size: 15px; margin-bottom: 8px; }
+.status-box.success h3 { color: #3ecfb0; }
+.status-box.error h3 { color: #ff4d4d; }
+.status-box p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+@media (max-width: 640px) { .page { padding: 32px 20px 60px; } .grid-2 { grid-template-columns: 1fr; } .title { font-size: 26px; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="logo-badge">Хекслет · Бриф 2026</div>
+  <h1 class="title">YouTube-<br><span>продюсирование</span></h1>
+  <p class="subtitle">Заполните форму — ответы автоматически придут продюсеру в Telegram</p>
+  <div class="header-divider"></div>
+  <div class="ai-banner">
+    <div class="ai-icon">⚡</div>
+    <div class="ai-text"><strong>AI-вектор: 50%+ контента</strong> — AI-инструменты для разработки, workflow с нейросетями, практические кейсы и новости. Остальное — программирование, карьера, интервью.</div>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+  <div class="progress-label" id="progressLabel">Заполнено: 0%</div>
+
+  <!-- 01. ЦЕЛИ И KPI -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">01</span><span class="section-title-text">Цели и KPI</span><div class="section-line"></div></div>
+    <div class="field">
+      <div class="field-label">Бизнес-цели канала <span class="field-required">*</span></div>
+      <div class="checkbox-group">
+        <div class="cb-item"><input type="checkbox" id="g1" name="goals" value="Узнаваемость бренда"><label for="g1">Узнаваемость бренда</label></div>
+        <div class="cb-item"><input type="checkbox" id="g2" name="goals" value="Генерация лидов"><label for="g2">Генерация лидов</label></div>
+        <div class="cb-item"><input type="checkbox" id="g3" name="goals" value="Продажи курсов"><label for="g3">Продажи курсов</label></div>
+        <div class="cb-item"><input type="checkbox" id="g4" name="goals" value="Экспертность"><label for="g4">Экспертность</label></div>
+        <div class="cb-item"><input type="checkbox" id="g5" name="goals" value="Сообщество"><label for="g5">Сообщество</label></div>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Что важнее всего через 6 месяцев — в цифрах <span class="field-required">*</span></div>
+      <textarea id="kpi6m" rows="3" placeholder="Например: 10 000 подписчиков, 50 лидов в месяц с YouTube, 200 продаж курсов — расставьте приоритеты"></textarea>
+    </div>
+    <div class="grid-2">
+      <div class="field"><div class="field-label">Просмотры / мес.</div><input type="text" id="kpiViews" placeholder="50 000"></div>
+      <div class="field"><div class="field-label">Подписчики / мес.</div><input type="text" id="kpiSubs" placeholder="1 000"></div>
+      <div class="field"><div class="field-label">CTR обложек</div><input type="text" id="kpiCtr" placeholder="5–7%"></div>
+      <div class="field"><div class="field-label">Удержание аудитории</div><input type="text" id="kpiRetention" placeholder="45%+"></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Бюджет на производство контента в месяц</div>
+      <input type="text" id="budget" placeholder="Хотя бы порядок цифр: до 100к, 100–300к, 300к+">
+    </div>
+    <div class="field">
+      <div class="field-label">LTV среднего студента на ИИ-курсах</div>
+      <input type="text" id="ltv" placeholder="Сколько в среднем платит один человек за всё время обучения">
+    </div>
+  </div>
+
+  <!-- 02. ЦЕЛЕВАЯ АУДИТОРИЯ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">02</span><span class="section-title-text">Целевая аудитория</span><div class="section-line"></div></div>
+    <div class="field">
+      <div class="field-label">Кто сейчас покупает ИИ-курсы? <span class="field-required">*</span></div>
+      <textarea id="currentBuyers" rows="3" placeholder="Возраст, профессия, какую боль решают покупкой курса"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-label">Возрастная группа</div>
+      <div class="checkbox-group">
+        <div class="cb-item"><input type="checkbox" id="a1" name="age" value="18–24"><label for="a1">18–24</label></div>
+        <div class="cb-item"><input type="checkbox" id="a2" name="age" value="25–34"><label for="a2">25–34</label></div>
+        <div class="cb-item"><input type="checkbox" id="a3" name="age" value="35–44"><label for="a3">35–44</label></div>
+        <div class="cb-item"><input type="checkbox" id="a4" name="age" value="45+"><label for="a4">45+</label></div>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Уровень подготовки</div>
+      <div class="checkbox-group">
+        <div class="cb-item"><input type="checkbox" id="l1" name="level" value="Полные новички"><label for="l1">Полные новички</label></div>
+        <div class="cb-item"><input type="checkbox" id="l2" name="level" value="Junior"><label for="l2">Junior</label></div>
+        <div class="cb-item"><input type="checkbox" id="l3" name="level" value="Middle+"><label for="l3">Middle+</label></div>
+        <div class="cb-item"><input type="checkbox" id="l4" name="level" value="Переход из другой сферы"><label for="l4">Переход из другой сферы</label></div>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Кого хотите привлечь дополнительно?</div>
+      <textarea id="newSegment" rows="2" placeholder="Новый сегмент, который пока не идёт к вам — кто это и почему он вам нужен"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-label">Страхи и возражения аудитории <span class="field-required">*</span></div>
+      <textarea id="fears" rows="3" placeholder="«Я не программист», «это дорого», «ИИ меня заменит» — что слышите чаще всего"></textarea>
+    </div>
+  </div>
+
+  <!-- 03. РЫНОК И КОНКУРЕНТЫ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">03</span><span class="section-title-text">Рынок и конкуренты</span><div class="section-line"></div></div>
+    <div class="field">
+      <div class="field-label">3–5 YouTube-каналов конкурентов по ИИ-обучению на русском <span class="field-required">*</span></div>
+      <textarea id="competitorChannels" rows="3" placeholder="Каналы, которые мониторите или которых боитесь — названия или ссылки"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-label">Что у конкурентов получается хорошо?</div>
+      <textarea id="competitorStrong" rows="3" placeholder="Конкретные форматы или темы, которые явно работают — видно по просмотрам, комментариям"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-label">Что у конкурентов слабое или раздражает аудиторию?</div>
+      <textarea id="competitorWeak" rows="3" placeholder="Что пишут в комментариях, что вам самим не нравится в их контенте"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-label">Есть ли у конкурентов воронка YouTube → продажа курса?</div>
+      <textarea id="competitorFunnel" rows="2" placeholder="Как она устроена — лид-магниты, ссылки в описании, отдельные лендинги"></textarea>
+    </div>
+  </div>
+
+  <!-- 04. ПРОДУКТ И ПОЗИЦИОНИРОВАНИЕ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">04</span><span class="section-title-text">Продукт и позиционирование</span><div class="section-line"></div></div>
+    <div class="field">
+      <div class="field-label">Какие ИИ-курсы и профессии есть сейчас? <span class="field-required">*</span></div>
+      <textarea id="currentProducts" rows="3" placeholder="Перечислите текущий продуктовый портфель в ИИ-направлении"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-label">Что планируется в ближайшие 3–6 месяцев?</div>
+      <textarea id="futureProducts" rows="2" placeholder="Новые курсы, профессии, форматы обучения в разработке"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-label">Чем ИИ-курсы Хекслета отличаются от конкурентов? <span class="field-required">*</span></div>
+      <textarea id="differentiation" rows="3" placeholder="Честно — что реально лучше, а не просто «у нас качественнее». Конкретные факты"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-label">Ценовой диапазон и модели монетизации</div>
+      <textarea id="pricing" rows="2" placeholder="Подписка, разовая покупка, рассрочка — цены и средний чек"></textarea>
+    </div>
+  </div>
+
+  <!-- 05. КОНТЕНТ-СТРАТЕГИЯ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">05</span><span class="section-title-text">Контент-стратегия</span><div class="section-line"></div></div>
+    <div class="field">
+      <div class="field-label">AI-темы — что приоритетно? <span class="field-required">*</span></div>
+      <div class="checkbox-group">
+        <div class="cb-item"><input type="checkbox" id="ai1" name="aitopics" value="AI для разработки"><label for="ai1">AI для разработки</label></div>
+        <div class="cb-item"><input type="checkbox" id="ai2" name="aitopics" value="Обзоры AI-инструментов"><label for="ai2">Обзоры инструментов</label></div>
+        <div class="cb-item"><input type="checkbox" id="ai3" name="aitopics" value="Workflow с нейросетями"><label for="ai3">Workflow с нейросетями</label></div>
+        <div class="cb-item"><input type="checkbox" id="ai4" name="aitopics" value="Практические кейсы с AI"><label for="ai4">Практические кейсы</label></div>
+        <div class="cb-item"><input type="checkbox" id="ai5" name="aitopics" value="Новости AI"><label for="ai5">Новости AI</label></div>
+        <div class="cb-item"><input type="checkbox" id="ai6" name="aitopics" value="Обучение с AI"><label for="ai6">Обучение с AI</label></div>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Другие темы канала</div>
+      <div class="checkbox-group">
+        <div class="cb-item"><input type="checkbox" id="t1" name="othertopics" value="Программирование"><label for="t1">Программирование</label></div>
+        <div class="cb-item"><input type="checkbox" id="t2" name="othertopics" value="Карьера в IT"><label for="t2">Карьера в IT</label></div>
+        <div class="cb-item"><input type="checkbox" id="t3" name="othertopics" value="Интервью с практиками"><label for="t3">Интервью</label></div>
+        <div class="cb-item"><input type="checkbox" id="t4" name="othertopics" value="Истории студентов"><label for="t4">Истории студентов</label></div>
+        <div class="cb-item"><input type="checkbox" id="t5" name="othertopics" value="Разборы кода"><label for="t5">Разборы кода</label></div>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Форматы видео</div>
+      <div class="checkbox-group">
+        <div class="cb-item"><input type="checkbox" id="f1" name="formats" value="Обучающие (8–20 мин)"><label for="f1">Обучающие (8–20 мин)</label></div>
+        <div class="cb-item"><input type="checkbox" id="f2" name="formats" value="Разборы / кейсы"><label for="f2">Разборы / кейсы</label></div>
+        <div class="cb-item"><input type="checkbox" id="f3" name="formats" value="Интервью"><label for="f3">Интервью</label></div>
+        <div class="cb-item"><input type="checkbox" id="f4" name="formats" value="Shorts"><label for="f4">Shorts</label></div>
+        <div class="cb-item"><input type="checkbox" id="f5" name="formats" value="Реакции / обзоры"><label for="f5">Реакции / обзоры</label></div>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Контент Хекслета, которым реально гордитесь</div>
+      <textarea id="proudContent" rows="2" placeholder="Лучшее из сделанного — что считаете эталоном по качеству или результату"></textarea>
+    </div>
+  </div>
+
+  <!-- 06. SEO И ХАЙП -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">06</span><span class="section-title-text">SEO и хайповые темы</span><div class="section-line"></div></div>
+    <div class="field">
+      <div class="field-label">Запросы про ИИ-обучение из Wordstat / Google Trends</div>
+      <textarea id="seoQueries" rows="3" placeholder="Если есть данные — вставьте. Если нет — перечислите темы, которые по ощущению интересуют аудиторию"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-label">Что про ИИ сейчас на хайпе в русскоязычном интернете?</div>
+      <textarea id="trendingTopics" rows="3" placeholder="Что обсуждают в Telegram-каналах, на форумах, в комментариях YouTube — конкретные темы и инструменты"></textarea>
+    </div>
+  </div>
+
+  <!-- 07. ТОН, СТИЛЬ, ОГРАНИЧЕНИЯ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">07</span><span class="section-title-text">Тон, стиль, ограничения</span><div class="section-line"></div></div>
+    <div class="field">
+      <div class="field-label">Голос Хекслета — прилагательные <span class="field-required">*</span></div>
+      <div class="grid-2">
+        <div class="field"><div class="field-label" style="font-size:11px;">Точно про нас</div><input type="text" id="toneYes" placeholder="Например: честный, практичный, дерзкий"></div>
+        <div class="field"><div class="field-label" style="font-size:11px;">Точно не про нас</div><input type="text" id="toneNo" placeholder="Например: пафосный, корпоративный, скучный"></div>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Темы, которые точно нельзя трогать</div>
+      <input type="text" id="forbidden" placeholder="Конкуренты по имени, политика, религия — что под запретом">
+    </div>
+    <div class="field">
+      <div class="field-label">Кто готов регулярно появляться в кадре?</div>
+      <textarea id="onCamera" rows="2" placeholder="Имена, роли — лица бренда или приглашённые эксперты. Сколько человек реально готовы сниматься"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-label">Что больше всего раздражает в ИИ-контенте конкурентов?</div>
+      <textarea id="dislikes" rows="3" placeholder="Что точно не хотите повторять — форматы, подача, темы, качество"></textarea>
+    </div>
+  </div>
+
+  <!-- 08. ПРОИЗВОДСТВО -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">08</span><span class="section-title-text">Производство</span><div class="section-line"></div></div>
+    <div class="grid-2">
+      <div class="field"><div class="field-label">Кто утверждает темы? <span class="field-required">*</span></div><input type="text" id="approveTopics" placeholder="Имя / роль"></div>
+      <div class="field"><div class="field-label">Кто согласует сценарии? <span class="field-required">*</span></div><input type="text" id="approveScripts" placeholder="Имя / роль"></div>
+      <div class="field"><div class="field-label">Итерации правок</div>
+        <div class="radio-group">
+          <div class="rb-item"><input type="radio" id="rev1" name="revisions" value="1 итерация"><label for="rev1">1</label></div>
+          <div class="rb-item"><input type="radio" id="rev2" name="revisions" value="2 итерации"><label for="rev2">2</label></div>
+          <div class="rb-item"><input type="radio" id="rev3" name="revisions" value="3+"><label for="rev3">3+</label></div>
+        </div>
+      </div>
+      <div class="field"><div class="field-label">Срок от сценария до публикации</div>
+        <div class="radio-group">
+          <div class="rb-item"><input type="radio" id="dl1" name="deadline" value="1 неделя"><label for="dl1">1 нед.</label></div>
+          <div class="rb-item"><input type="radio" id="dl2" name="deadline" value="2 недели"><label for="dl2">2 нед.</label></div>
+          <div class="rb-item"><input type="radio" id="dl3" name="deadline" value="3 недели"><label for="dl3">3 нед.</label></div>
+          <div class="rb-item"><input type="radio" id="dl4" name="deadline" value="Месяц"><label for="dl4">Месяц</label></div>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">AI-аватары для создания видео (HeyGen v5 и аналоги)</div>
+      <div class="radio-group" style="margin-bottom:10px;">
+        <div class="rb-item"><input type="radio" id="av1" name="avatars" value="Да, рассматриваем"><label for="av1">Рассматриваем</label></div>
+        <div class="rb-item"><input type="radio" id="av2" name="avatars" value="Нет, только живые съёмки"><label for="av2">Только живые съёмки</label></div>
+        <div class="rb-item"><input type="radio" id="av3" name="avatars" value="Не определились"><label for="av3">Не определились</label></div>
+      </div>
+      <input type="text" id="avatarDetails" placeholder="Если рассматриваете — кто будет лицом для аватара, для каких форматов">
+    </div>
+  </div>
+
+  <!-- 09. РЕФЕРЕНСЫ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">09</span><span class="section-title-text">Референсы</span><div class="section-line"></div></div>
+    <div class="field"><div class="field-label">YouTube-каналы для вдохновения (не конкуренты)</div><textarea id="refChannels" rows="2" placeholder="Названия или ссылки — каналы с похожей подачей или которые нравятся эстетикой"></textarea></div>
+    <div class="field"><div class="field-label">Ссылки на конкретные ролики, которые нравятся</div><textarea id="refVideos" rows="2" placeholder="https://youtube.com/..."></textarea></div>
+    <div class="grid-2">
+      <div class="field"><div class="field-label">Что нравится в этих референсах</div><textarea id="refLikes" rows="3" placeholder="Подача, темп, графика, стиль общения с аудиторией..."></textarea></div>
+      <div class="field"><div class="field-label">Что точно не хотим повторять</div><textarea id="refDislikes" rows="3" placeholder="Что раздражает или не подходит для бренда Хекслета"></textarea></div>
+    </div>
+  </div>
+
+  <!-- 10. ПУБЛИКАЦИЯ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">10</span><span class="section-title-text">Публикация</span><div class="section-line"></div></div>
+    <div class="field">
+      <div class="field-label">Платформы для публикации</div>
+      <div class="checkbox-group">
+        <div class="cb-item"><input type="checkbox" id="plt1" name="platforms" value="YouTube" checked><label for="plt1">YouTube</label></div>
+        <div class="cb-item"><input type="checkbox" id="plt2" name="platforms" value="ВКонтакте"><label for="plt2">ВКонтакте</label></div>
+        <div class="cb-item"><input type="checkbox" id="plt3" name="platforms" value="Rutube"><label for="plt3">Rutube</label></div>
+        <div class="cb-item"><input type="checkbox" id="plt4" name="platforms" value="Дзен"><label for="plt4">Дзен</label></div>
+        <div class="cb-item"><input type="checkbox" id="plt5" name="platforms" value="Instagram"><label for="plt5">Instagram</label></div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <div class="field-label">Длинных видео в месяц</div>
+        <div class="radio-group">
+          <div class="rb-item"><input type="radio" id="lv1" name="longvideos" value="2"><label for="lv1">2</label></div>
+          <div class="rb-item"><input type="radio" id="lv2" name="longvideos" value="4"><label for="lv2">4</label></div>
+          <div class="rb-item"><input type="radio" id="lv3" name="longvideos" value="8"><label for="lv3">8</label></div>
+          <div class="rb-item"><input type="radio" id="lv4" name="longvideos" value="10"><label for="lv4">10</label></div>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Shorts в месяц</div>
+        <div class="radio-group">
+          <div class="rb-item"><input type="radio" id="sh1" name="shorts" value="15"><label for="sh1">15</label></div>
+          <div class="rb-item"><input type="radio" id="sh2" name="shorts" value="20"><label for="sh2">20</label></div>
+          <div class="rb-item"><input type="radio" id="sh3" name="shorts" value="25"><label for="sh3">25</label></div>
+          <div class="rb-item"><input type="radio" id="sh4" name="shorts" value="30"><label for="sh4">30</label></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11. ДОПОЛНИТЕЛЬНО -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">11</span><span class="section-title-text">Дополнительно</span><div class="section-line"></div></div>
+    <div class="field"><div class="field-label">Комментарии, ограничения, важные детали</div><textarea id="comments" rows="4" placeholder="Всё что не вошло выше: юридические ограничения, особые пожелания, что уже пробовали и не зашло..."></textarea></div>
+  </div>
+
+  <button class="send-btn" id="sendBtn">Отправить бриф →</button>
+  <div class="status-box success" id="successBox">
+    <h3>✓ Бриф отправлен!</h3>
+    <p>Ответы успешно доставлены продюсеру в Telegram.<br>Ожидайте обратной связи.</p>
+  </div>
+  <div class="status-box error" id="errorBox">
+    <h3>Ошибка отправки</h3>
+    <p id="errorMsg">Не удалось отправить. Попробуйте ещё раз.</p>
+  </div>
+</div>
+
+<script>
+var WORKER_URL = 'https://hexlet-brief-proxy.clubprofi-im.workers.dev';
+
+function gc(n){return Array.from(document.querySelectorAll('input[name="'+n+'"]:checked')).map(function(e){return e.value;});}
+function gr(n){var e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:'—';}
+function v(id){var e=document.getElementById(id);return(e&&e.value.trim())?e.value.trim():'—';}
+function li(a){return a.length?a.map(function(x){return '  • '+x;}).join('\n'):'  —';}
+function il(a){return a.length?a.join(', '):'—';}
+function esc(s){return s.replace(/[_*[\]()~`>#+\-=|{}.!\\]/g,function(c){return '\\'+c;});}
+
+function buildMsg(){
+  return [
+    '📋 *БРИФ: ХЕКСЛЕТ — YOUTUBE*',
+    '⚡ AI\\-вектор: 50%\\+ контента',
+    '━━━━━━━━━━━━━━━━━━━━━',
+    '',
+    '*01\\. Цели и KPI*',
+    'Цели: '+esc(il(gc('goals'))),
+    'KPI через 6 мес\\.: '+esc(v('kpi6m')),
+    'Просмотры/мес\\.: '+esc(v('kpiViews')),
+    'Подписчики/мес\\.: '+esc(v('kpiSubs')),
+    'CTR: '+esc(v('kpiCtr')),
+    'Удержание: '+esc(v('kpiRetention')),
+    'Бюджет/мес\\.: '+esc(v('budget')),
+    'LTV студента: '+esc(v('ltv')),
+    '',
+    '*02\\. Целевая аудитория*',
+    'Кто покупает сейчас: '+esc(v('currentBuyers')),
+    'Возраст: '+esc(il(gc('age'))),
+    'Уровень: '+esc(il(gc('level'))),
+    'Новый сегмент: '+esc(v('newSegment')),
+    'Страхи и возражения: '+esc(v('fears')),
+    '',
+    '*03\\. Рынок и конкуренты*',
+    'Каналы конкурентов:\n'+esc(v('competitorChannels')),
+    'Что у них работает: '+esc(v('competitorStrong')),
+    'Что слабое: '+esc(v('competitorWeak')),
+    'Воронка конкурентов: '+esc(v('competitorFunnel')),
+    '',
+    '*04\\. Продукт и позиционирование*',
+    'Текущие ИИ\\-курсы:\n'+esc(v('currentProducts')),
+    'Планы на 3–6 мес\\.: '+esc(v('futureProducts')),
+    'Отличие от конкурентов: '+esc(v('differentiation')),
+    'Ценообразование: '+esc(v('pricing')),
+    '',
+    '*05\\. Контент\\-стратегия*',
+    'AI\\-темы:\n'+esc(li(gc('aitopics'))),
+    'Другие темы:\n'+esc(li(gc('othertopics'))),
+    'Форматы:\n'+esc(li(gc('formats'))),
+    'Лучший контент: '+esc(v('proudContent')),
+    '',
+    '*06\\. SEO и хайп*',
+    'Запросы/Wordstat: '+esc(v('seoQueries')),
+    'Хайповые темы: '+esc(v('trendingTopics')),
+    '',
+    '*07\\. Тон и стиль*',
+    'Голос — да: '+esc(v('toneYes')),
+    'Голос — нет: '+esc(v('toneNo')),
+    'Запрещённые темы: '+esc(v('forbidden')),
+    'Кто в кадре: '+esc(v('onCamera')),
+    'Что раздражает у конкурентов: '+esc(v('dislikes')),
+    '',
+    '*08\\. Производство*',
+    'Утверждает темы: '+esc(v('approveTopics')),
+    'Согласует сценарии: '+esc(v('approveScripts')),
+    'Правки: '+esc(gr('revisions')),
+    'Срок: '+esc(gr('deadline')),
+    'AI\\-аватары: '+esc(gr('avatars')),
+    'Детали аватара: '+esc(v('avatarDetails')),
+    '',
+    '*09\\. Референсы*',
+    'Каналы: '+esc(v('refChannels')),
+    'Ролики: '+esc(v('refVideos')),
+    'Нравится: '+esc(v('refLikes')),
+    'Не хотим: '+esc(v('refDislikes')),
+    '',
+    '*10\\. Публикация*',
+    'Платформы: '+esc(il(gc('platforms'))),
+    'Длинных видео/мес\\.: '+esc(gr('longvideos')),
+    'Shorts/мес\\.: '+esc(gr('shorts')),
+    '',
+    '*11\\. Дополнительно*',
+    esc(v('comments')),
+    '',
+    '━━━━━━━━━━━━━━━━━━━━━',
+    '👤 Хекслет',
+  ].join('\n');
+}
+
+document.getElementById('sendBtn').addEventListener('click',function(){
+  var btn=document.getElementById('sendBtn');
+  var okBox=document.getElementById('successBox');
+  var errBox=document.getElementById('errorBox');
+  okBox.style.display='none'; errBox.style.display='none';
+  btn.disabled=true; btn.textContent='Отправляю...';
+  fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:buildMsg()})})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(d.ok){btn.textContent='✓ Отправлено!';okBox.style.display='block';okBox.scrollIntoView({behavior:'smooth',block:'nearest'});}
+    else{throw new Error(d.description||'Ошибка API');}
+  })
+  .catch(function(err){btn.disabled=false;btn.textContent='Отправить бриф →';document.getElementById('errorMsg').textContent='Ошибка: '+err.message;errBox.style.display='block';});
+});
+
+var cg=['goals','age','level','aitopics','othertopics','formats','platforms'];
+var rg=['revisions','deadline','avatars','longvideos','shorts'];
+var ti=['kpi6m','kpiViews','kpiSubs','kpiCtr','kpiRetention','budget','ltv','currentBuyers','newSegment','fears','competitorChannels','competitorStrong','competitorWeak','competitorFunnel','currentProducts','futureProducts','differentiation','pricing','proudContent','seoQueries','trendingTopics','toneYes','toneNo','forbidden','onCamera','dislikes','approveTopics','approveScripts','avatarDetails','refChannels','refVideos','refLikes','refDislikes','comments'];
+var total=cg.length+rg.length+ti.length;
+
+function upd(){
+  var f=0;
+  ti.forEach(function(id){if(v(id)!=='—')f++;});
+  cg.forEach(function(n){if(gc(n).length>0)f++;});
+  rg.forEach(function(n){if(gr(n)!=='—')f++;});
+  var p=Math.round(f/total*100);
+  document.getElementById('progressBar').style.width=p+'%';
+  document.getElementById('progressLabel').textContent='Заполнено: '+f+' из '+total+' полей ('+p+'%)';
+}
+document.querySelectorAll('input,textarea').forEach(function(el){el.addEventListener('change',upd);el.addEventListener('input',upd);});
+upd();
+</script>
+</body>
+</html>
