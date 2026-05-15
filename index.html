@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Бриф — Хекслет YouTube-продюсирование</title>
+<title>Бриф — YouTube-продюсирование</title>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -68,7 +68,7 @@ input::placeholder, textarea::placeholder { color: var(--muted); }
 </head>
 <body>
 <div class="page">
-  <div class="logo-badge">Хекслет · Бриф 2026</div>
+  <div class="logo-badge">Бриф 2026</div>
   <h1 class="title">YouTube-<br><span>продюсирование</span></h1>
   <p class="subtitle">Заполните форму — ответы автоматически придут продюсеру в Telegram</p>
   <div class="header-divider"></div>
@@ -180,7 +180,7 @@ input::placeholder, textarea::placeholder { color: var(--muted); }
       <textarea id="futureProducts" rows="2" placeholder="Новые курсы, профессии, форматы обучения в разработке"></textarea>
     </div>
     <div class="field">
-      <div class="field-label">Чем ИИ-курсы Хекслета отличаются от конкурентов? <span class="field-required">*</span></div>
+      <div class="field-label">Чем ИИ-курсы отличаются от конкурентов? <span class="field-required">*</span></div>
       <textarea id="differentiation" rows="3" placeholder="Честно — что реально лучше, а не просто «у нас качественнее». Конкретные факты"></textarea>
     </div>
     <div class="field">
@@ -224,7 +224,7 @@ input::placeholder, textarea::placeholder { color: var(--muted); }
       </div>
     </div>
     <div class="field">
-      <div class="field-label">Контент Хекслета, которым реально гордитесь</div>
+      <div class="field-label">Контент, которым реально гордитесь</div>
       <textarea id="proudContent" rows="2" placeholder="Лучшее из сделанного — что считаете эталоном по качеству или результату"></textarea>
     </div>
   </div>
@@ -246,7 +246,7 @@ input::placeholder, textarea::placeholder { color: var(--muted); }
   <div class="section">
     <div class="section-header"><span class="section-num">07</span><span class="section-title-text">Тон, стиль, ограничения</span><div class="section-line"></div></div>
     <div class="field">
-      <div class="field-label">Голос Хекслета — прилагательные <span class="field-required">*</span></div>
+      <div class="field-label">Голос канала — прилагательные <span class="field-required">*</span></div>
       <div class="grid-2">
         <div class="field"><div class="field-label" style="font-size:11px;">Точно про нас</div><input type="text" id="toneYes" placeholder="Например: честный, практичный, дерзкий"></div>
         <div class="field"><div class="field-label" style="font-size:11px;">Точно не про нас</div><input type="text" id="toneNo" placeholder="Например: пафосный, корпоративный, скучный"></div>
@@ -306,7 +306,7 @@ input::placeholder, textarea::placeholder { color: var(--muted); }
     <div class="field"><div class="field-label">Ссылки на конкретные ролики, которые нравятся</div><textarea id="refVideos" rows="2" placeholder="https://youtube.com/..."></textarea></div>
     <div class="grid-2">
       <div class="field"><div class="field-label">Что нравится в этих референсах</div><textarea id="refLikes" rows="3" placeholder="Подача, темп, графика, стиль общения с аудиторией..."></textarea></div>
-      <div class="field"><div class="field-label">Что точно не хотим повторять</div><textarea id="refDislikes" rows="3" placeholder="Что раздражает или не подходит для бренда Хекслета"></textarea></div>
+      <div class="field"><div class="field-label">Что точно не хотим повторять</div><textarea id="refDislikes" rows="3" placeholder="Что раздражает или не подходит для бренда"></textarea></div>
     </div>
   </div>
 
@@ -374,7 +374,7 @@ function esc(s){return s.replace(/[_*[\]()~`>#+\-=|{}.!\\]/g,function(c){return 
 
 function buildMsg(){
   return [
-    '📋 *БРИФ: ХЕКСЛЕТ — YOUTUBE*',
+    '📋 *БРИФ — YOUTUBE*',
     '⚡ AI\\-вектор: 50%\\+ контента',
     '━━━━━━━━━━━━━━━━━━━━━',
     '',
@@ -447,7 +447,7 @@ function buildMsg(){
     esc(v('comments')),
     '',
     '━━━━━━━━━━━━━━━━━━━━━',
-    '👤 Хекслет',
+    '👤 Курсы по программированию',
   ].join('\n');
 }
 
